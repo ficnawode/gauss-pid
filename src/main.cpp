@@ -5,6 +5,7 @@
 #include <TFile.h>
 #include <TH1F.h>
 #include <TH2D.h>
+#include <TThread.h>
 #include <iostream>
 #include <string>
 
@@ -14,9 +15,12 @@ namespace at = AnalysisTree;
 class Fit1D {
 public:
   Fit1D(const float p_min, const float p_max) : _p_min{p_min}, _p_max{p_max} {
-    auto name = "pdg_" + std::to_string(p_min) + "_" + std::to_string(p_max);
+    auto name = "hist_" + std::to_string(p_min) + "_" + std::to_string(p_max);
     _hist_data = new TH1F(name.c_str(), name.c_str(), 200, -1, 2);
+    auto fit_name = "fit_" + std::to_string(_p_min) + "_" + std::to_string(_p_max);
+    _fit = new TF1(fit_name.c_str(), "gaus", -1, 2);
   }
+
 
   void FillHist(const float p, const float mass2) {
     if (p > _p_min && p < _p_max) {
@@ -24,7 +28,15 @@ public:
     }
   }
 
-  void WriteHist() { _hist_data->Write(); }
+  TF1 *Fit() {
+    _hist_data->Fit(_fit,"gaus", "WS");
+    return _fit;
+  }
+
+  void WriteHist() {
+    _hist_data->Write();
+    _fit->Write();
+  }
 
 private:
   TH1F *_hist_data;
@@ -42,7 +54,7 @@ public:
         _filename{filename} {
     float delta = (p_max - p_min) / n_bins;
     for (float min = 0; min < _p_max; min += delta) {
-      _fits.push_back(Fit1D(min, min+delta));
+      _fits.push_back(Fit1D(min, min + delta));
     }
   }
 
@@ -83,6 +95,12 @@ public:
     }
   }
 
+  void FitHists() {
+    for (auto fit : _fits) {
+      fit.Fit();
+    }
+  }
+
   void WriteHists() {
     for (auto fit : _fits) {
       fit.WriteHist();
@@ -105,6 +123,7 @@ int main() {
   std::cout << "\nhello, world!\n" << std::endl;
   auto fit2d = GAUSPID::Fit2D(2212, 0, 6, 5, "prediction_tree_little.root");
   fit2d.FillHists();
+  fit2d.FitHists();
   TFile *out_file = TFile::Open("gauss_out.root", "recreate");
   fit2d.WriteHists();
   out_file->Close();
