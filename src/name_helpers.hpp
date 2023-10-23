@@ -54,4 +54,34 @@ namespace name_helpers
         }
         return pdg_str + "gaussian fit;p, GeV/c;m^2 , GeV^2/c^4 ;" ;
     }
+
+    inline const std::string create_2d_inferred_name(std::vector<int> pdgs)
+    {
+        std::string pdg_str = "";
+        for(auto& pdg: pdgs)
+        {
+            pdg_str = pdg_str + std::to_string(pdg) + "_";
+        }
+        return pdg_str + "inferred";
+    }
+
+    inline const std::string create_2d_inferred_name(std::string particle_name)
+    {
+        return particle_name + "_inferred";
+    }
+
+    inline const std::string create_2d_inferred_title(std::vector<int> pdgs)
+    {
+        std::string pdg_str = "";
+        for(auto& pdg: pdgs)
+        {
+            pdg_str = pdg_str + std::to_string(pdg) + ", ";
+        }
+        return pdg_str + "gauss-inferred;p, GeV/c;m^2 , GeV^2/c^4 ;" ;
+    }
+
+    inline const std::string create_2d_inferred_title(std::string particle_name)
+    {
+        return particle_name + ", gauss-inferred;p, GeV/c;m^2 , GeV^2/c^4 ;" ;
+    }
 } // namespace name_helpers

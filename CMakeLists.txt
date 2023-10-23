@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 project(GAUSPID CXX)
 if(NOT DEFINED CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 17)
+  set(CMAKE_CXX_STANDARD 20)
 endif()
 set(PROJECT_VERSION 1.0)
 
@@ -49,7 +49,7 @@ include_directories(${CMAKE_SOURCE_DIR} ${AnalysisTree_INCLUDE_DIR})
 set(SOURCES
   src/GAUSPIDFit1D.cpp
   src/GAUSPIDFit2D.cpp
-    src/main.cpp
+    src/fit.cpp
   )
 
 set(HEADERS
@@ -70,10 +70,14 @@ add_target_property(GAUSPID COMPILE_FLAGS "-DDO_TPCCATRACKER_EFF_PERFORMANCE")
 find_package(Boost 1.78 REQUIRED COMPONENTS json)
 target_link_libraries(GAUSPID Boost::boost Boost::json)
 
-add_executable(gauss_pid src/main.cpp)
-add_dependencies(gauss_pid GAUSPID)
-add_target_property(gauss_pid COMPILE_FLAGS "-DDO_TPCCATRACKER_EFF_PERFORMANCE")
-target_link_libraries(gauss_pid GAUSPID)
+add_executable(gauss_fit src/fit.cpp)
+add_executable(gauss_infer src/infer.cpp)
+add_dependencies(gauss_fit GAUSPID)
+add_dependencies(gauss_infer GAUSPID)
+add_target_property(gauss_fit COMPILE_FLAGS "-DDO_TPCCATRACKER_EFF_PERFORMANCE")
+add_target_property(gauss_infer COMPILE_FLAGS "-DDO_TPCCATRACKER_EFF_PERFORMANCE")
+target_link_libraries(gauss_fit GAUSPID)
+target_link_libraries(gauss_infer GAUSPID)
 
 install(TARGETS GAUSPID EXPORT GAUSPIDTargets
         LIBRARY DESTINATION lib
@@ -101,7 +105,8 @@ install(
         OPTIONAL
 )
 
-install (TARGETS gauss_pid RUNTIME DESTINATION bin)
+install (TARGETS gauss_fit RUNTIME DESTINATION bin)
+install (TARGETS gauss_infer RUNTIME DESTINATION bin)
 #************
 
 include(CMakePackageConfigHelpers)

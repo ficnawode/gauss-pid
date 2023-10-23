@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <iostream>
 #include <string>
-#include <SimpleCut.hpp>
 #include <TF1.h>
 #include <TF2.h>
 #include <TFile.h>
