@@ -9,7 +9,7 @@ namespace GAUSPID
     class Fit1D
     {
     public:
-        Fit1D(const std::vector<int> pdg, const float p_min, const float p_max);
+        Fit1D(const std::vector<int> pdg, const float p_min, const float p_max, const float m2_min=-1, const float m2_max=2);
 
         void FillHist(const float p, const float mass2);
         TF1* Fit();

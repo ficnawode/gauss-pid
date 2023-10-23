@@ -6,15 +6,15 @@
 
 namespace GAUSPID
 {
-    Fit1D::Fit1D(const std::vector<int> pdg, const float p_min, const float p_max) :
+    Fit1D::Fit1D(const std::vector<int> pdg, const float p_min, const float p_max, const float m2_min, const float m2_max) :
         _p_min{p_min}, _p_max{p_max}
     {
         auto hist_name = name_helpers::create_1d_hist_name(pdg, p_min, p_max);
         auto hist_title = name_helpers::create_1d_fit_title(pdg, p_min, p_max);
-        _hist = new TH1F(hist_name.c_str(), hist_title.c_str(), 200, -1, 2);
+        _hist = new TH1F(hist_name.c_str(), hist_title.c_str(), 200, m2_min, m2_max);
 
         auto fit_name = name_helpers::create_1d_fit_name(pdg, p_min, p_max);
-        _fit = new TF1(fit_name.c_str(), "gaus", -1, 2);
+        _fit = new TF1(fit_name.c_str(), "gaus", m2_min, m2_max);
     }
 
     void Fit1D::FillHist(const float p, const float mass2)
