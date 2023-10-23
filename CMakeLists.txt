@@ -47,10 +47,15 @@ include_directories(${CMAKE_SOURCE_DIR} ${AnalysisTree_INCLUDE_DIR})
 
 #************
 set(SOURCES
+  src/GAUSPIDFit1D.cpp
+  src/GAUSPIDFit2D.cpp
     src/main.cpp
   )
 
 set(HEADERS
+  src/name_helpers.hpp
+  src/GAUSPIDFit1D.hpp
+  src/GAUSPIDFit2D.hpp
   )
 
 add_library(GAUSPID SHARED ${SOURCES} G__GAUSPID.cxx)
