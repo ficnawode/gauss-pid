@@ -1,7 +1,8 @@
 #include <algorithm>
+#include <cmath>
 #include <iostream>
-#include <string>
 #include <numeric>
+#include <string>
 #include <utility>
 #include <AnalysisTree/Chain.hpp>
 #include <AnalysisTree/Matching.hpp>
@@ -9,7 +10,6 @@
 #include <TFile.h>
 #include <TH2F.h>
 #include "src/name_helpers.hpp"
-#include <cmath>
 
 namespace GAUSPID
 {
@@ -46,7 +46,7 @@ namespace GAUSPID
         {
             if(std::find(_pdg.begin(), _pdg.end(), mc_pdg) != _pdg.end())
             {
-              _hist_mc_true->Fill(p,m2);
+                _hist_mc_true->Fill(p, m2);
             }
             return _fit->Eval(p, m2);
         }
@@ -56,41 +56,42 @@ namespace GAUSPID
             _hist->Fill(p, m2);
             if(std::find(_pdg.begin(), _pdg.end(), mc_pdg) != _pdg.end())
             {
-              _hist_match->Fill(p,m2);
+                _hist_match->Fill(p, m2);
             }
-            else 
+            else
             {
-              _hist_mismatch->Fill(p,m2);
+                _hist_mismatch->Fill(p, m2);
             }
         }
 
         void Write()
         {
             _hist->Write();
-        _hist_match->Write();
-        _hist_mismatch->Write();
-        _hist_mc_true->Write();
+            _hist_match->Write();
+            _hist_mismatch->Write();
+            _hist_mc_true->Write();
         }
 
         void PrintStats()
         {
-          auto n_classified = _hist->GetEntries();
-          auto n_match = _hist_match->GetEntries();
-          auto n_total = _hist_mc_true->GetEntries();
-          float efficiency = (float)n_match/(float)n_total * 100;
-          float purity = (float)n_match/(float)n_classified * 100;
-          std::string pdg_str = "";
-          for (auto& pdg : _pdg)
-          {
-            pdg_str = pdg_str + "/" + std::to_string(pdg);
-          }
+            auto n_classified = _hist->GetEntries();
+            auto n_match = _hist_match->GetEntries();
+            auto n_total = _hist_mc_true->GetEntries();
+            float efficiency = (float)n_match / (float)n_total * 100;
+            float purity = (float)n_match / (float)n_classified * 100;
+            std::string pdg_str = "";
+            for(auto& pdg: _pdg)
+            {
+                pdg_str = pdg_str + "/" + std::to_string(pdg);
+            }
 
-          std::cout << std::endl << "Particle pdg: " << pdg_str << std::endl;
-          std::cout << "# classified = " << n_classified << std::endl;
-          std::cout << "# matched = " << n_match << std::endl;
-          std::cout << "# mc_true = " << n_total  << std::endl;
-          std::cout << "efficiency = " << round(efficiency*100)/100<< "\%" << std::endl;
-          std::cout << "purity = " << round(purity*100)/100 << "\%" << std::endl;
+            std::cout << std::endl << "Particle pdg: " << pdg_str << std::endl;
+            std::cout << "# classified = " << n_classified << std::endl;
+            std::cout << "# matched = " << n_match << std::endl;
+            std::cout << "# mc_true = " << n_total << std::endl;
+            std::cout << "efficiency = " << round(efficiency * 100) / 100
+                      << "\%" << std::endl;
+            std::cout << "purity = " << round(purity * 100) / 100 << "\%" << std::endl;
         }
 
         inline std::vector<int> GetPdg() const
@@ -195,7 +196,7 @@ int main()
     const std::vector<int> pion_pdg = {13, 211, 11};
     const std::vector<std::vector<int>> pdgs = {proton_pdg, kaon_pdg, pion_pdg};
 
-    const std::string filelist_path = "filelist.txt";
+    const std::string filelist_path = "filelist_validate.txt";
     const std::string outfile_path = "gauss_inferred.root";
 
     auto inferrer = new GAUSPID::Inferrer("gauss_out.root", pdgs);

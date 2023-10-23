@@ -2,7 +2,7 @@
 
 int main()
 {
-    const auto filelist_path = "filelist.txt";
+    const auto filelist_path = "filelist_train.txt";
     const int nbins = 50;
     const float p_min = 0;
     const float p_max = 6;
