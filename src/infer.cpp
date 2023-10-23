@@ -9,6 +9,7 @@
 #include <TFile.h>
 #include <TH2F.h>
 #include "src/name_helpers.hpp"
+#include <cmath>
 
 namespace GAUSPID
 {
@@ -73,11 +74,11 @@ namespace GAUSPID
 
         void PrintStats()
         {
-          auto n_classified = _hist_match->GetEntries();
+          auto n_classified = _hist->GetEntries();
           auto n_match = _hist_match->GetEntries();
-          auto n_total = _hist_match->GetEntries();
-          auto efficiency = n_match/n_total;
-          auto purity = n_match/n_classified;
+          auto n_total = _hist_mc_true->GetEntries();
+          float efficiency = (float)n_match/(float)n_total * 100;
+          float purity = (float)n_match/(float)n_classified * 100;
           std::string pdg_str = "";
           for (auto& pdg : _pdg)
           {
@@ -85,6 +86,11 @@ namespace GAUSPID
           }
 
           std::cout << std::endl << "Particle pdg: " << pdg_str << std::endl;
+          std::cout << "# classified = " << n_classified << std::endl;
+          std::cout << "# matched = " << n_match << std::endl;
+          std::cout << "# mc_true = " << n_total  << std::endl;
+          std::cout << "efficiency = " << round(efficiency*100)/100<< "\%" << std::endl;
+          std::cout << "purity = " << round(purity*100)/100 << "\%" << std::endl;
         }
 
         inline std::vector<int> GetPdg() const
@@ -165,6 +171,14 @@ namespace GAUSPID
             _bg_hist->Write();
         }
 
+        void PrintStats()
+        {
+            for(auto c: _classes)
+            {
+                c.PrintStats();
+            }
+        }
+
     private:
         std::vector<ParticleFit> _classes;
         std::vector<TH2F*> _histograms;
@@ -222,6 +236,7 @@ int main()
         }
     }
     TFile* out_file = TFile::Open(outfile_path.c_str(), "recreate");
+    inferrer->PrintStats();
     inferrer->WriteHistograms();
     out_file->Close();
     return 0;
