@@ -8,6 +8,7 @@ int main()
 
     const float p_min = 0;
     const float p_max = 6;
+
     const std::vector<int> proton_pdg = {2212};
     const std::vector<int> kaon_pdg = {321};
     const std::vector<int> pion_pdg = {13, 211, 11};
@@ -32,7 +33,7 @@ int main()
         fit.ConcatenateFits();
     }
 
-    TFile* out_file = TFile::Open(, "recreate");
+    TFile* out_file = TFile::Open(out_path, "recreate");
 
     std::cout << "Writing to file..." << std::endl;
     for(auto& fit: fits)
