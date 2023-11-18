@@ -2,8 +2,10 @@
 
 int main()
 {
-    const auto filelist_path = "filelist_train.txt";
-    const int nbins = 50;
+    auto filelist_path = "filelist_train.txt";
+    auto out_path = "gauss_out.root";
+    int nbins = 50;
+
     const float p_min = 0;
     const float p_max = 6;
     const std::vector<int> proton_pdg = {2212};
@@ -30,7 +32,7 @@ int main()
         fit.ConcatenateFits();
     }
 
-    TFile* out_file = TFile::Open("gauss_out.root", "recreate");
+    TFile* out_file = TFile::Open(, "recreate");
 
     std::cout << "Writing to file..." << std::endl;
     for(auto& fit: fits)
