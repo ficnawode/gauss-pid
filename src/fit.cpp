@@ -38,7 +38,7 @@ int main(int argc, char** argv)
 
     const std::vector<int> proton_pdg = {2212};
     const std::vector<int> kaon_pdg = {321};
-    const std::vector<int> pion_pdg = {13, 211, 11};
+    const std::vector<int> pion_pdg = {-13, 211, -11};
     const std::array<std::vector<int>, 3> pdgs = {proton_pdg, kaon_pdg, pion_pdg};
 
     std::vector<GAUSPID::Fit2D> fits;

@@ -225,7 +225,7 @@ int main(int argc, char** argv)
 
     const std::vector<int> proton_pdg = {2212};
     const std::vector<int> kaon_pdg = {321};
-    const std::vector<int> pion_pdg = {13, 211, 11};
+    const std::vector<int> pion_pdg = {-13, 211, -11};
     const std::vector<std::vector<int>> pdgs = {proton_pdg, kaon_pdg, pion_pdg};
 
     auto inferrer = new GAUSPID::Inferrer(hist_path, pdgs);
