@@ -189,17 +189,46 @@ namespace GAUSPID
 
 }
 
-int main()
+static inline bool check_argparse(const char* arg, const std::string long_form, const std::string short_form)
 {
+    auto res1 = strcmp(arg, long_form.c_str());
+    auto res2 = strcmp(arg, short_form.c_str());
+    return (res1 == 0) || (res2 == 0);
+}
+
+int main(int argc, char** argv)
+{
+    std::string filelist_path = "filelist_validate.txt";
+    std::string out_path = "gauss_inferred.root";
+    std::string hist_path = "gauss_out.root ";
+
+    using std::cout;
+    using std::endl;
+    for(int i = 1; i < argc; ++i)
+    {
+        if(check_argparse(argv[i], "--filelist", "-f"))
+        {
+            filelist_path = std::string(argv[++i]);
+            cout << "Input filelist path: " << filelist_path << endl;
+        }
+        if(check_argparse(argv[i], "--output", "-o"))
+        {
+            out_path = std::string(argv[++i]);
+            cout << "Output file path: " << out_path << endl;
+        }
+        if(check_argparse(argv[i], "--histpath", "-hp"))
+        {
+            hist_path = std::string(argv[++i]);
+            cout << "Path to hitogram ROOT file: " << hist_path << endl;
+        }
+    }
+
     const std::vector<int> proton_pdg = {2212};
     const std::vector<int> kaon_pdg = {321};
     const std::vector<int> pion_pdg = {13, 211, 11};
     const std::vector<std::vector<int>> pdgs = {proton_pdg, kaon_pdg, pion_pdg};
 
-    const std::string filelist_path = "filelist_validate.txt";
-    const std::string outfile_path = "gauss_inferred.root";
-
-    auto inferrer = new GAUSPID::Inferrer("gauss_out.root", pdgs);
+    auto inferrer = new GAUSPID::Inferrer(hist_path, pdgs);
 
     namespace at = AnalysisTree;
     auto chain = new at::Chain(
@@ -236,7 +265,7 @@ int main()
             }
         }
     }
-    TFile* out_file = TFile::Open(outfile_path.c_str(), "recreate");
+    TFile* out_file = TFile::Open(out_path.c_str(), "recreate");
     inferrer->PrintStats();
     inferrer->WriteHistograms();
     out_file->Close();
